@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Campus Profile - Campus Connect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    {% if get_flashed_messages() %}
+    <div class="flash-container">
+        {% for message in get_flashed_messages() %}
+            <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>Complete Your Profile</h2>
+            <p>Let's set up your campus profile</p>
+        </div>
+        
+        <form action="{{ url_for('setup_campus_profile') }}" method="POST" class="auth-form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="profile_picture" class="form-label">Campus Logo/Image</label>
+                <input type="file" id="profile_picture" name="profile_picture" class="form-control" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+                <label for="campus_name" class="form-label">Campus Name</label>
+                <input type="text" id="campus_name" name="campus_name" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="about" class="form-label">About</label>
+                <textarea id="about" name="about" class="form-control" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="established_year" class="form-label">Established Year</label>
+                <input type="number" id="established_year" name="established_year" class="form-control" required min="1800" max="2099">
+            </div>
+            
+            <div class="form-group">
+                <label for="courses_offered" class="form-label">Courses Offered</label>
+                <textarea id="courses_offered" name="courses_offered" class="form-control" rows="4" required 
+                    placeholder="Enter courses, one per line"></textarea>
+            </div>
+            
+            <button type="submit" class="button w-100">Create Profile</button>
+        </form>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

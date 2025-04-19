@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Student Profile - Campus Connect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    {% if get_flashed_messages() %}
+    <div class="flash-container">
+        {% for message in get_flashed_messages() %}
+            <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>Complete Your Profile</h2>
+            <p>Let's set up your student profile</p>
+        </div>
+        
+        <form action="{{ url_for('setup_student_profile') }}" method="POST" class="auth-form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="profile_picture" class="form-label">Profile Picture</label>
+                <input type="file" id="profile_picture" name="profile_picture" class="form-control" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+                <label for="first_name" class="form-label">First Name</label>
+                <input type="text" id="first_name" name="first_name" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="last_name" class="form-label">Last Name</label>
+                <input type="text" id="last_name" name="last_name" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="bio" class="form-label">Bio</label>
+                <textarea id="bio" name="bio" class="form-control" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" id="location" name="location" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="course" class="form-label">Course</label>
+                <input type="text" id="course" name="course" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="graduation_start" class="form-label">Graduation Start Year</label>
+                <input type="number" id="graduation_start" name="graduation_start" class="form-control" required min="2000" max="2099">
+            </div>
+            
+            <div class="form-group">
+                <label for="graduation_end" class="form-label">Graduation End Year</label>
+                <input type="number" id="graduation_end" name="graduation_end" class="form-control" required min="2000" max="2099">
+            </div>
+            
+            <button type="submit" class="button w-100">Create Profile</button>
+        </form>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

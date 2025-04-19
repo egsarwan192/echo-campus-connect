@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -81,16 +80,95 @@ def login():
         if user and check_password_hash(user.password, password):
             login_user(user)
             
-            # Redirect based on role
+            # Check if profile exists
             if user.role == 'Student':
+                profile = StudentProfile.query.filter_by(user_id=user.id).first()
+                if not profile:
+                    return redirect(url_for('setup_student_profile'))
                 return redirect(url_for('student_dashboard'))
             else:
+                profile = CampusProfile.query.filter_by(user_id=user.id).first()
+                if not profile:
+                    return redirect(url_for('setup_campus_profile'))
                 return redirect(url_for('campus_dashboard'))
         else:
             flash('Invalid email or password')
             return redirect(url_for('login'))
     
     return render_template('login.html')
+
+@app.route('/setup/student-profile', methods=['GET', 'POST'])
+@login_required
+def setup_student_profile():
+    if current_user.role != 'Student':
+        flash('Access denied')
+        return redirect(url_for('index'))
+        
+    if request.method == 'POST':
+        profile = StudentProfile(
+            user_id=current_user.id,
+            first_name=request.form.get('first_name'),
+            last_name=request.form.get('last_name'),
+            bio=request.form.get('bio'),
+            location=request.form.get('location'),
+            course=request.form.get('course'),
+            graduation_start=request.form.get('graduation_start'),
+            graduation_end=request.form.get('graduation_end')
+        )
+        
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file.filename:
+                filename = secure_filename(f"{current_user.id}_{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}")
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(file_path)
+                profile.profile_picture = filename
+        
+        try:
+            db.session.add(profile)
+            db.session.commit()
+            flash('Profile created successfully!')
+            return redirect(url_for('student_dashboard'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error creating profile: {str(e)}')
+    
+    return render_template('setup_student_profile.html')
+
+@app.route('/setup/campus-profile', methods=['GET', 'POST'])
+@login_required
+def setup_campus_profile():
+    if current_user.role != 'Campus':
+        flash('Access denied')
+        return redirect(url_for('index'))
+        
+    if request.method == 'POST':
+        profile = CampusProfile(
+            user_id=current_user.id,
+            campus_name=request.form.get('campus_name'),
+            about=request.form.get('about'),
+            established_year=request.form.get('established_year'),
+            courses_offered=request.form.get('courses_offered')
+        )
+        
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file.filename:
+                filename = secure_filename(f"{current_user.id}_{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}")
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(file_path)
+                profile.profile_picture = filename
+        
+        try:
+            db.session.add(profile)
+            db.session.commit()
+            flash('Profile created successfully!')
+            return redirect(url_for('campus_dashboard'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error creating profile: {str(e)}')
+    
+    return render_template('setup_campus_profile.html')
 
 @app.route('/logout')
 @login_required

@@ -1,4 +1,3 @@
-
 // Campus Connect - Main JavaScript File
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -10,6 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize flash message auto-dismiss
     initFlashMessages();
+    
+    // Initialize profile form validation
+    initProfileFormValidation();
 });
 
 /**
@@ -171,5 +173,69 @@ function previewProfilePicture(input, previewId) {
         };
         
         reader.readAsDataURL(input.files[0]);
+    }
+}
+
+/**
+ * Initialize form validation for profile setup forms
+ */
+function initProfileFormValidation() {
+    const studentProfileForm = document.querySelector('form[action*="setup/student-profile"]');
+    const campusProfileForm = document.querySelector('form[action*="setup/campus-profile"]');
+    
+    if (studentProfileForm) {
+        studentProfileForm.addEventListener('submit', function(event) {
+            let isValid = true;
+            
+            // Validate graduation years
+            const startYear = parseInt(document.getElementById('graduation_start').value);
+            const endYear = parseInt(document.getElementById('graduation_end').value);
+            
+            if (endYear <= startYear) {
+                showInputError(document.getElementById('graduation_end'), 'End year must be after start year');
+                isValid = false;
+            }
+            
+            // Validate required fields
+            ['first_name', 'last_name', 'bio', 'location', 'course'].forEach(fieldId => {
+                const input = document.getElementById(fieldId);
+                if (!input.value.trim()) {
+                    showInputError(input, 'This field is required');
+                    isValid = false;
+                }
+            });
+            
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    }
+    
+    if (campusProfileForm) {
+        campusProfileForm.addEventListener('submit', function(event) {
+            let isValid = true;
+            
+            // Validate required fields
+            ['campus_name', 'about', 'established_year', 'courses_offered'].forEach(fieldId => {
+                const input = document.getElementById(fieldId);
+                if (!input.value.trim()) {
+                    showInputError(input, 'This field is required');
+                    isValid = false;
+                }
+            });
+            
+            // Validate established year
+            const establishedYear = parseInt(document.getElementById('established_year').value);
+            const currentYear = new Date().getFullYear();
+            
+            if (establishedYear > currentYear) {
+                showInputError(document.getElementById('established_year'), 'Year cannot be in the future');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
     }
 }
