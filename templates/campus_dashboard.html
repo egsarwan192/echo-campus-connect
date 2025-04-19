@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Dashboard - Campus Connect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Flash Messages -->
+    {% if get_flashed_messages() %}
+    <div class="flash-container">
+        {% for message in get_flashed_messages() %}
+            <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Sidebar Toggle (Mobile) -->
+    <button class="sidebar-toggle">☰</button>
+    
+    <!-- Dashboard Layout -->
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">Campus Connect</div>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <a href="{{ url_for('campus_dashboard') }}" class="sidebar-menu-item active">Dashboard</a>
+                <a href="#" class="sidebar-menu-item">Profile</a>
+                <a href="#" class="sidebar-menu-item">Events</a>
+                <a href="#" class="sidebar-menu-item">Student List</a>
+                <a href="#" class="sidebar-menu-item">Settings</a>
+                <a href="{{ url_for('logout') }}" class="sidebar-menu-item">Logout</a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Campus Dashboard</h1>
+                <div class="dashboard-actions">
+                    <a href="#" class="button secondary">Edit Profile</a>
+                    <a href="#" class="button">Create Event</a>
+                </div>
+            </div>
+            
+            <!-- Campus Profile Section -->
+            <section class="profile-section card">
+                <div class="profile-header">
+                    {% if profile and profile.profile_picture %}
+                        <img src="{{ url_for('static', filename='uploads/' + profile.profile_picture) }}" alt="Campus Profile" class="profile-picture" id="profile-preview">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='uploads/default-campus.jpg') }}" alt="Default Campus" class="profile-picture" id="profile-preview">
+                    {% endif %}
+                    
+                    <div class="profile-info">
+                        <h3>
+                            {% if profile and profile.campus_name %}
+                                {{ profile.campus_name }}
+                            {% else %}
+                                Welcome, Campus Partner
+                            {% endif %}
+                        </h3>
+                        <p>
+                            {% if profile and profile.established_year %}
+                                Established: {{ profile.established_year }}
+                            {% endif %}
+                            {% if profile and profile.about %}
+                                <br>{{ profile.about[:150] }}{% if profile.about|length > 150 %}...{% endif %}
+                            {% else %}
+                                <br>Complete your profile to showcase your institution to students
+                            {% endif %}
+                        </p>
+                        
+                        <!-- Profile Picture Upload -->
+                        <form action="{{ url_for('upload_profile_picture') }}" method="POST" enctype="multipart/form-data" class="profile-upload-form">
+                            <input type="file" name="profile_picture" id="profile_picture" accept="image/*" onchange="previewProfilePicture(this, 'profile-preview')" style="display: none;">
+                            <button type="button" class="button secondary" onclick="document.getElementById('profile_picture').click()">Update Profile Picture</button>
+                            <button type="submit" class="button">Save</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Campus Stats -->
+                <div class="row mt-4">
+                    <div class="col-3">
+                        <div class="text-center">
+                            <h4>0</h4>
+                            <p>Events Created</p>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="text-center">
+                            <h4>0</h4>
+                            <p>Student Registrations</p>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="text-center">
+                            <h4>0</h4>
+                            <p>Profile Views</p>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="text-center">
+                            <h4>0</h4>
+                            <p>Gallery Images</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Events Management Section -->
+            <section class="mb-4">
+                <h2 class="mb-3">My Events</h2>
+                
+                <div class="card">
+                    <p>You haven't created any events yet. Create your first event to engage with students.</p>
+                    <a href="#" class="button mt-2">Create Event</a>
+                </div>
+            </section>
+            
+            <!-- Registered Students Section -->
+            <section>
+                <h2 class="mb-3">Registered Students</h2>
+                
+                {% if students %}
+                    <div class="card">
+                        {% for student in students %}
+                            <div class="student-list-item">
+                                {% if student.profile_picture %}
+                                    <img src="{{ url_for('static', filename='uploads/' + student.profile_picture) }}" alt="Student" class="student-avatar">
+                                {% else %}
+                                    <img src="{{ url_for('static', filename='uploads/default-avatar.jpg') }}" alt="Student" class="student-avatar">
+                                {% endif %}
+                                <div>
+                                    <h4>
+                                        {% if student.first_name and student.last_name %}
+                                            {{ student.first_name }} {{ student.last_name }}
+                                        {% else %}
+                                            Student {{ loop.index }}
+                                        {% endif %}
+                                    </h4>
+                                    <p>
+                                        {% if student.course %}
+                                            {{ student.course }}
+                                        {% else %}
+                                            Course not specified
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="card">
+                        <p>No students have registered with your institution yet.</p>
+                        <p class="mt-2">Complete your profile and create events to attract students!</p>
+                    </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

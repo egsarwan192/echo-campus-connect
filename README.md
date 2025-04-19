@@ -1,73 +1,92 @@
-# Welcome to your Lovable project
 
-## Project info
+# Campus Connect
 
-**URL**: https://lovable.dev/projects/2e33a867-6de5-43cf-8dc9-85de4db28cd9
+Campus Connect is a web application that connects students and campuses, providing a platform for educational institutions to showcase their offerings and for students to discover opportunities.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- **Two User Roles:** Student and Campus
+- **Authentication:** Email-based authentication with role selection
+- **Profiles:** Create and manage profiles for both students and campuses
+- **Dashboard:** Personalized dashboards for each user role
+- **File Uploads:** Support for profile pictures and other documents
+- **Responsive Design:** Works seamlessly on all devices
 
-**Use Lovable**
+## Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/2e33a867-6de5-43cf-8dc9-85de4db28cd9) and start prompting.
+- **Frontend:** HTML, CSS (pure CSS, no frameworks), Vanilla JavaScript
+- **Backend:** Flask
+- **Database:** SQLite (for development)
+- **Authentication:** Flask-Login with bcrypt for password hashing
 
-Changes made via Lovable will be committed automatically to this repo.
+## Project Structure
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+campus-connect/
+├── app.py                 # Main Flask application
+├── models.py              # Database models
+├── requirements.txt       # Project dependencies
+├── static/                # Static assets
+│   ├── css/
+│   │   └── styles.css     # Main stylesheet
+│   ├── js/
+│   │   └── script.js      # JavaScript functionality
+│   └── uploads/           # User uploaded files
+└── templates/             # HTML templates
+    ├── index.html         # Landing page
+    ├── login.html         # Login page
+    ├── signup.html        # Signup page
+    ├── student_dashboard.html  # Student dashboard
+    └── campus_dashboard.html   # Campus dashboard
 ```
 
-**Edit a file directly in GitHub**
+## Setup and Installation
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. **Clone the repository**
+   ```
+   git clone https://github.com/yourusername/campus-connect.git
+   cd campus-connect
+   ```
 
-**Use GitHub Codespaces**
+2. **Create a virtual environment**
+   ```
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+3. **Install dependencies**
+   ```
+   pip install -r requirements.txt
+   ```
 
-## What technologies are used for this project?
+4. **Initialize the database**
+   ```
+   python app.py
+   ```
+   The database will be automatically created on first run.
 
-This project is built with:
+5. **Run the application**
+   ```
+   python app.py
+   ```
+   The application will be available at http://localhost:5000
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Color Scheme
 
-## How can I deploy this project?
+- Primary Orange: #F28C38
+- White: #FFFFFF
+- Text Gray: #4A4A4A
+- Border/Background Gray: #E0E0E0
 
-Simply open [Lovable](https://lovable.dev/projects/2e33a867-6de5-43cf-8dc9-85de4db28cd9) and click on Share -> Publish.
+## Future Enhancements
 
-## Can I connect a custom domain to my Lovable project?
+- Resume builder functionality for students
+- Event management system for campuses
+- Messaging system between students and campuses
+- Advanced search and filtering options
+- Galleries for campus profiles
+- Email notifications
 
-Yes, you can!
+## License
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project is open source and available under the [MIT License](LICENSE).

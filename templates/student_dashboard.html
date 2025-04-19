@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Campus Connect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Flash Messages -->
+    {% if get_flashed_messages() %}
+    <div class="flash-container">
+        {% for message in get_flashed_messages() %}
+            <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Sidebar Toggle (Mobile) -->
+    <button class="sidebar-toggle">☰</button>
+    
+    <!-- Dashboard Layout -->
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">Campus Connect</div>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <a href="{{ url_for('student_dashboard') }}" class="sidebar-menu-item active">Dashboard</a>
+                <a href="#" class="sidebar-menu-item">Explore</a>
+                <a href="#" class="sidebar-menu-item">Profile</a>
+                <a href="#" class="sidebar-menu-item">Resume Builder</a>
+                <a href="#" class="sidebar-menu-item">Settings</a>
+                <a href="{{ url_for('logout') }}" class="sidebar-menu-item">Logout</a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Student Dashboard</h1>
+                <div class="dashboard-actions">
+                    <a href="#" class="button secondary">Edit Profile</a>
+                </div>
+            </div>
+            
+            <!-- Profile Section -->
+            <section class="profile-section card">
+                <div class="profile-header">
+                    {% if profile and profile.profile_picture %}
+                        <img src="{{ url_for('static', filename='uploads/' + profile.profile_picture) }}" alt="Profile" class="profile-picture" id="profile-preview">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='uploads/default-avatar.jpg') }}" alt="Default Profile" class="profile-picture" id="profile-preview">
+                    {% endif %}
+                    
+                    <div class="profile-info">
+                        <h3>
+                            {% if profile and profile.first_name and profile.last_name %}
+                                {{ profile.first_name }} {{ profile.last_name }}
+                            {% else %}
+                                Welcome, Student
+                            {% endif %}
+                        </h3>
+                        <p>
+                            {% if profile and profile.course %}
+                                {{ profile.course }}
+                                {% if profile.graduation_start and profile.graduation_end %}
+                                    ({{ profile.graduation_start }} - {{ profile.graduation_end }})
+                                {% endif %}
+                            {% else %}
+                                Complete your profile to showcase your information
+                            {% endif %}
+                        </p>
+                        
+                        <!-- Profile Picture Upload -->
+                        <form action="{{ url_for('upload_profile_picture') }}" method="POST" enctype="multipart/form-data" class="profile-upload-form">
+                            <input type="file" name="profile_picture" id="profile_picture" accept="image/*" onchange="previewProfilePicture(this, 'profile-preview')" style="display: none;">
+                            <button type="button" class="button secondary" onclick="document.getElementById('profile_picture').click()">Update Profile Picture</button>
+                            <button type="submit" class="button">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Recommended Campuses Section -->
+            <section class="mb-4">
+                <h2 class="mb-3">Recommended Campuses</h2>
+                
+                <div class="cards-grid">
+                    {% if recommended_campuses %}
+                        {% for campus in recommended_campuses %}
+                            <div class="campus-card">
+                                {% if campus.profile_picture %}
+                                    <img src="{{ url_for('static', filename='uploads/' + campus.profile_picture) }}" alt="{{ campus.campus_name }}" class="campus-card-img">
+                                {% else %}
+                                    <img src="{{ url_for('static', filename='uploads/default-campus.jpg') }}" alt="Campus" class="campus-card-img">
+                                {% endif %}
+                                <div class="campus-card-content">
+                                    <h3 class="campus-card-title">{{ campus.campus_name }}</h3>
+                                    <p class="campus-card-text">
+                                        {% if campus.about %}
+                                            {{ campus.about[:100] }}{% if campus.about|length > 100 %}...{% endif %}
+                                        {% else %}
+                                            Information not available
+                                        {% endif %}
+                                    </p>
+                                    <a href="#" class="button">View Details</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <!-- Placeholder Cards -->
+                        <div class="campus-card">
+                            <img src="{{ url_for('static', filename='uploads/default-campus.jpg') }}" alt="Campus" class="campus-card-img">
+                            <div class="campus-card-content">
+                                <h3 class="campus-card-title">University of Technology</h3>
+                                <p class="campus-card-text">A leading institution for technology education with state-of-the-art facilities and expert faculty.</p>
+                                <a href="#" class="button">View Details</a>
+                            </div>
+                        </div>
+                        
+                        <div class="campus-card">
+                            <img src="{{ url_for('static', filename='uploads/default-campus.jpg') }}" alt="Campus" class="campus-card-img">
+                            <div class="campus-card-content">
+                                <h3 class="campus-card-title">Arts & Design Academy</h3>
+                                <p class="campus-card-text">Unleash your creativity at our premier arts institution focusing on design, fine arts and visual media.</p>
+                                <a href="#" class="button">View Details</a>
+                            </div>
+                        </div>
+                        
+                        <div class="campus-card">
+                            <img src="{{ url_for('static', filename='uploads/default-campus.jpg') }}" alt="Campus" class="campus-card-img">
+                            <div class="campus-card-content">
+                                <h3 class="campus-card-title">Business School International</h3>
+                                <p class="campus-card-text">Develop leadership skills and business acumen at our globally recognized business school.</p>
+                                <a href="#" class="button">View Details</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+            
+            <!-- Upcoming Events Section -->
+            <section>
+                <h2 class="mb-3">Upcoming Events</h2>
+                
+                <div class="cards-grid">
+                    <!-- Placeholder Events -->
+                    <div class="card">
+                        <h3>Career Fair 2025</h3>
+                        <p>Meet representatives from top companies and explore career opportunities.</p>
+                        <p><strong>Date:</strong> June 15, 2025</p>
+                        <p><strong>Location:</strong> Virtual Event</p>
+                        <a href="#" class="button mt-2">Register</a>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Tech Workshop Series</h3>
+                        <p>Learn the latest technologies and tools from industry experts.</p>
+                        <p><strong>Date:</strong> May 10-12, 2025</p>
+                        <p><strong>Location:</strong> Tech Hub Campus</p>
+                        <a href="#" class="button mt-2">Register</a>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Study Abroad Seminar</h3>
+                        <p>Explore international education opportunities and scholarship programs.</p>
+                        <p><strong>Date:</strong> July 5, 2025</p>
+                        <p><strong>Location:</strong> International Center</p>
+                        <a href="#" class="button mt-2">Register</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

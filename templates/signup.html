@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Campus Connect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Flash Messages -->
+    {% if get_flashed_messages() %}
+    <div class="flash-container">
+        {% for message in get_flashed_messages() %}
+            <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Sign Up Form -->
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>Create Your Account</h2>
+            <p>Join Campus Connect to connect with students and campuses</p>
+        </div>
+        
+        <form action="{{ url_for('signup') }}" method="POST" class="auth-form" id="signup-form">
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" id="email" name="email" class="form-control" required placeholder="Enter your email">
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" name="password" class="form-control" required placeholder="Create a password">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Select Your Role</label>
+                <div class="radio-group">
+                    <label class="radio-item">
+                        <input type="radio" name="role" value="Student" {% if request.args.get('role') == 'Student' %}checked{% endif %}>
+                        Student
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="role" value="Campus" {% if request.args.get('role') == 'Campus' %}checked{% endif %}>
+                        Campus
+                    </label>
+                </div>
+            </div>
+            
+            <button type="submit" class="button w-100">Create Account</button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
